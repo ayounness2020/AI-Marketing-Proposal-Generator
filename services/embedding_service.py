@@ -1,76 +1,71 @@
 """
 Embedding Service
 =================
-Uses Gemini REST API directly via requests — no gRPC, no Google auth issues.
+Uses TF-IDF vectorization — no API needed, works on any platform.
+Dimension: 768 (to match existing FAISS index config)
 """
 
 from __future__ import annotations
 
 import logging
-import os
-import time
-import requests
-import streamlit as st
-import config
+import hashlib
+import math
+import re
+from collections import Counter
 
 logger = logging.getLogger(__name__)
 
-_MODEL_NAME = "models/text-embedding-004"
-_API_URL = "https://generativelanguage.googleapis.com/v1beta/{model}:embedContent"
+DIMENSION = 768
+
+
+def _tokenize(text: str) -> list[str]:
+    text = text.lower()
+    tokens = re.findall(r'\b\w+\b', text)
+    return tokens
+
+
+def _hash_embed(text: str, dim: int = DIMENSION) -> list[float]:
+    """Fast hash-based embedding — deterministic, no API needed."""
+    tokens = _tokenize(text)
+    if not tokens:
+        return [0.0] * dim
+
+    vec = [0.0] * dim
+    counts = Counter(tokens)
+    total = sum(counts.values())
+
+    for token, count in counts.items():
+        # Use multiple hash functions for better distribution
+        for seed in range(3):
+            h = hashlib.md5(f"{seed}:{token}".encode()).hexdigest()
+            idx = int(h[:8], 16) % dim
+            sign = 1 if int(h[8], 16) % 2 == 0 else -1
+            tfidf = (count / total) * math.log(1 + 1 / (count / total))
+            vec[idx] += sign * tfidf
+
+    # Normalize
+    norm = math.sqrt(sum(x * x for x in vec)) or 1.0
+    return [x / norm for x in vec]
 
 
 class EmbeddingService:
 
-    def __init__(self, model_name: str = _MODEL_NAME) -> None:
+    def __init__(self, model_name: str = "tfidf-hash-768") -> None:
         self._model_name = model_name
-        self._api_key = (
-            st.secrets.get("GEMINI_API_KEY")
-            or os.getenv("GEMINI_API_KEY")
-            or os.getenv("GOOGLE_API_KEY")
-            or config.GEMINI_API_KEY
-        )
-        logger.info("Embedding service ready (REST): %s", model_name)
+        logger.info("Embedding service ready: %s", model_name)
 
     @property
     def model_name(self) -> str:
         return self._model_name
 
-    def _embed_single(self, text: str, task_type: str = "RETRIEVAL_DOCUMENT") -> list[float]:
-        text = text[:1500]
-        url = _API_URL.format(model=self._model_name)
-        payload = {
-            "model": self._model_name,
-            "content": {"parts": [{"text": text}]},
-            "taskType": task_type,
-        }
-        for attempt in range(3):
-            try:
-                resp = requests.post(
-                    url,
-                    json=payload,
-                    params={"key": self._api_key},
-                    timeout=15,
-                )
-                resp.raise_for_status()
-                return resp.json()["embedding"]["values"]
-            except Exception as e:
-                if attempt < 2:
-                    time.sleep(2 ** attempt)
-                else:
-                    raise RuntimeError(f"Embedding failed: {e}")
-
     def embed_text(self, text: str) -> list[float]:
-        return self._embed_single(text, "RETRIEVAL_DOCUMENT")
+        return _hash_embed(text)
 
     def embed_chunks(self, texts: list[str]) -> list[list[float]]:
         if not texts:
             return []
-        embeddings = []
-        for i, text in enumerate(texts):
-            embeddings.append(self._embed_single(text, "RETRIEVAL_DOCUMENT"))
-            if (i + 1) % 5 == 0:
-                time.sleep(0.3)
-        return embeddings
+        logger.info("Embedding %d chunks...", len(texts))
+        return [_hash_embed(t) for t in texts]
 
     def embed_query(self, text: str) -> list[float]:
-        return self._embed_single(text, "RETRIEVAL_QUERY")
+        return _hash_embed(text)
