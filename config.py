@@ -25,7 +25,7 @@ EMBEDDING_DIMENSION: int = 768
 
 # ── Retrieval ─────────────────────────────────────────────────────────────────
 TOP_K: int = int(os.getenv("TOP_K", "5"))
-MAX_CHUNK_TOKENS: int = int(os.getenv("MAX_CHUNK_TOKENS", "200"))  # reduced from 500
+MAX_CHUNK_TOKENS: int = int(os.getenv("MAX_CHUNK_TOKENS", "500"))  # reduced from 500
 
 # ── Section headers ───────────────────────────────────────────────────────────
 SECTION_HEADERS: list[str] = [
