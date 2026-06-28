@@ -11,6 +11,7 @@ import logging
 import os
 import time
 import google.generativeai as genai
+import streamlit as st
 import config
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,7 @@ class EmbeddingService:
 
     def __init__(self, model_name: str = _MODEL_NAME) -> None:
         self._model_name = model_name
-        api_key = os.getenv("GEMINI_API_KEY", config.GEMINI_API_KEY)
+        api_key = st.secrets.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY") or config.GEMINI_API_KEY
         genai.configure(api_key=api_key)
         logger.info("Gemini embedding service ready: %s", model_name)
 

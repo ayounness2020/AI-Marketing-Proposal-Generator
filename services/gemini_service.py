@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 import os
 import google.generativeai as genai
+import streamlit as st
 import config
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ Summarize what you find. Be helpful and informative. You can respond in Arabic o
 class GeminiService:
 
     def __init__(self) -> None:
-        api_key = os.getenv("GEMINI_API_KEY", config.GEMINI_API_KEY)
+        api_key = st.secrets.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY") or config.GEMINI_API_KEY
         genai.configure(api_key=api_key)
         self._model = genai.GenerativeModel(
             model_name=config.GEMINI_MODEL,
