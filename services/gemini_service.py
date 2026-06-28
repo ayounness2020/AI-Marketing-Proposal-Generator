@@ -37,7 +37,7 @@ class GeminiService:
 
     def __init__(self) -> None:
         api_key = st.secrets.get("GEMINI_API_KEY") or os.getenv("GEMINI_API_KEY") or config.GEMINI_API_KEY
-        genai.configure(api_key=api_key)
+        genai.configure(api_key=api_key, transport="rest")
         self._model = genai.GenerativeModel(
             model_name=config.GEMINI_MODEL,
             generation_config={
