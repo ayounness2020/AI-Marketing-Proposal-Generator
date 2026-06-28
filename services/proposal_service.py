@@ -64,8 +64,7 @@ class ProposalService:
         if not chunks:
             return {"num_chunks": 0}
 
-        if len(chunks) > 10:
-            chunks = chunks[:10]
+
 
         texts = [c.text for c in chunks]
         embeddings = self._embedder.embed_chunks(texts)
