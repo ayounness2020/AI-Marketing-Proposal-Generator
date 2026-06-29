@@ -13,7 +13,6 @@ import sys
 from pathlib import Path
 
 import streamlit as st
-import traceback
 
 # ── Bootstrap path ──────────────────────────────────────────────────────────
 sys.path.insert(0, str(Path(__file__).parent))
@@ -129,10 +128,10 @@ with st.sidebar:
     col1, col2 = st.columns(2)
     with col1:
         if st.button("🔄 Rebuild Index", use_container_width=True):
-            with st.spinner("Rebuilding..."):
-                st.cache_resource.clear()
+            with st.spinner("Rebuilding…"):
                 res = service.rebuild_index()
                 st.success(f"Rebuilt: {res['total_files']} files, {res['total_chunks']} chunks")
+
     with col2:
         if st.button("🗑️ Clear All", use_container_width=True):
             if st.session_state.get("confirm_clear"):
@@ -240,32 +239,18 @@ with tab1:
                     st.divider()
 
                     # Download button
-                    import io
-                    from docx import Document as DocxDocument
-                    def md_to_docx(t, n):
-                        doc = DocxDocument()
-                        doc.add_heading("Marketing Proposal for " + client_name, 0)
-                        for ln in t.split(chr(10)):
-                            ln = ln.strip()
-                            if not ln: doc.add_paragraph("")
-                            elif ln.startswith("## "): doc.add_heading(ln[3:], level=1)
-                            elif ln.startswith("- "): doc.add_paragraph(ln[2:], style="List Bullet")
-                            else: doc.add_paragraph(ln)
-                        buf = io.BytesIO()
-                        doc.save(buf)
-                        buf.seek(0)
-                        return buf.getvalue()
-                    col_dl1, col_dl2 = st.columns(2)
-                    with col_dl1:
-                        st.download_button("Word", data=md_to_docx(proposal, client_name), file_name="proposal.docx", mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document", use_container_width=True)
-                    with col_dl2:
-                        st.download_button("Markdown", data=proposal, file_name="proposal.md", mime="text/markdown", use_container_width=True)
+                    st.download_button(
+                        "⬇️ Download Proposal (Markdown)",
+                        data=proposal,
+                        file_name=f"proposal_{client_name.replace(' ', '_')}.md",
+                        mime="text/markdown",
+                    )
                     st.markdown(proposal)
 
                 except Exception as e:
-                    st.error(f"❌ {uf.name}: {e}")
-                    st.code(traceback.format_exc())
+                    st.error(f"Generation failed: {e}")
                     logger.exception("Proposal generation error")
+
 # ─────────────────────────────────────────────────────────────────────────────
 # TAB 2 — CHAT WITH DOCUMENTS
 # ─────────────────────────────────────────────────────────────────────────────
@@ -442,3 +427,4 @@ with tab4:
             # Format the same way the service does
             retriever = Retriever(VectorStore(), EmbeddingService())
             formatted = retriever.format_context(retrieved)
+            st.text_area("Full context string", value=formatted, height=400)
