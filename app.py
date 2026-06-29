@@ -43,7 +43,7 @@ st.markdown("""
 }
 .score-high { color: #16a34a; font-weight: bold; }
 .score-mid  { color: #d97706; font-weight: bold; }
-.score-low  { color: #dc2626; font-weight: bold; }
+.score-low  { color: #dc2626; font-weight: bold; } .stMarkdown p, .stMarkdown li, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 { direction: auto; unicode-bidi: plaintext; }
 .doc-type-badge {
     background: #e8f0fe; color: #1a56db; padding: 2px 10px;
     border-radius: 20px; font-size: 0.85rem; font-weight: 600;
