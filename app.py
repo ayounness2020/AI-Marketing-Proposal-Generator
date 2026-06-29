@@ -43,7 +43,7 @@ st.markdown("""
 }
 .score-high { color: #16a34a; font-weight: bold; }
 .score-mid  { color: #d97706; font-weight: bold; }
-.score-low  { color: #dc2626; font-weight: bold; } * { unicode-bidi: plaintext; } .stMarkdown { direction: auto; text-align: right; } .stMarkdown h1, .stMarkdown h2, .stMarkdown h3 { direction: rtl; text-align: right; }
+.score-low  { color: #dc2626; font-weight: bold; } .score-low  { color: #dc2626; font-weight: bold; }
 .doc-type-badge {
     background: #e8f0fe; color: #1a56db; padding: 2px 10px;
     border-radius: 20px; font-size: 0.85rem; font-weight: 600;
@@ -371,7 +371,16 @@ Include for each service:
                             use_container_width=True
                         )
 
-                    st.markdown(result)
+                    import unicodedata
+                    def is_arabic(text):
+                        for ch in text[:100]:
+                            if unicodedata.bidirectional(ch) in ("R", "AL"):
+                                return True
+                        return False
+                    if is_arabic(result):
+                        st.markdown(f"<div style='direction:rtl;text-align:right;font-family:Arial;line-height:1.8'>{result}</div>", unsafe_allow_html=True)
+                    else:
+                        st.markdown(result)
 
                 except Exception as e:
                     st.error(f"❌ Error: {e}")
