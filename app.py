@@ -175,6 +175,8 @@ with tab1:
         budget = st.text_input("💰 Budget Range", placeholder="e.g. EGP 50,000/month")
     with col_e:
         timeline = st.selectbox("📅 Timeline", ["3 Months", "6 Months", "12 Months", "Custom"])
+        if timeline == "Custom":
+            timeline = st.text_input("Enter custom timeline", placeholder="e.g. 9 Months, 2 Weeks") or "Custom"
     with col_f:
         target_audience = st.text_input("👥 Target Audience", placeholder="e.g. Men 25-45, Cairo, Mid-income")
 
