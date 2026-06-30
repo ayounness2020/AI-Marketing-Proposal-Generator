@@ -58,6 +58,17 @@ def get_service() -> ProposalService:
 
 service = get_service()
 
+def render_text(text):
+    """Render markdown, auto-detecting Arabic for RTL display."""
+    import unicodedata
+    arabic_chars = sum(1 for c in text[:80] if unicodedata.bidirectional(c) in ("R", "AL"))
+    if arabic_chars > 3:
+        import markdown as _md
+        html = _md.markdown(text, extensions=["extra"])
+        st.markdown(f"<div style='direction:rtl;text-align:right;font-family:Arial;line-height:1.8'>{html}</div>", unsafe_allow_html=True)
+    else:
+        st.markdown(text)
+
 if "chat_history" not in st.session_state:
     st.session_state.chat_history: list[dict] = []
 if "last_retrieved_chunks" not in st.session_state:
@@ -457,7 +468,7 @@ with tab2:
 
     for msg in st.session_state.chat_history:
         with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+            render_text(msg["content"])
 
     if user_input := st.chat_input("Ask anything about your documents… (Arabic or English)"):
         st.session_state.chat_history.append({"role": "user", "content": user_input})
@@ -475,7 +486,7 @@ with tab2:
 
         st.session_state.chat_history.append({"role": "assistant", "content": response})
         with st.chat_message("assistant"):
-            st.markdown(response)
+            render_text(response)
 
     if st.session_state.chat_history:
         if st.button("🗑️ Clear Chat History"):
