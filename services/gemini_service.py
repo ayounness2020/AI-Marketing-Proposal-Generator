@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import logging
 import os
+import time
 import requests
 import streamlit as st
 import config
@@ -44,24 +45,52 @@ class GeminiService:
     def is_available(self) -> bool:
         return bool(self._api_key)
 
-    def generate_response(self, prompt: str, system: str = "") -> str:
+    def generate_response(self, prompt: str, system: str = "", max_retries: int = 4) -> str:
         messages = []
         if system:
             messages.append({"role": "system", "content": system})
         messages.append({"role": "user", "content": prompt})
 
-        try:
-            resp = requests.post(
-                _API_URL,
-                headers={"Authorization": f"Bearer {self._api_key}", "Content-Type": "application/json"},
-                json={"model": self._model, "messages": messages},
-                timeout=55,
-            )
-            resp.raise_for_status()
-            return resp.json()["choices"][0]["message"]["content"]
-        except Exception as exc:
-            logger.error("LLM error: %s", exc)
-            return f"⚠️ Error: {exc}"
+        last_error = None
+        for attempt in range(max_retries):
+            try:
+                resp = requests.post(
+                    _API_URL,
+                    headers={"Authorization": f"Bearer {self._api_key}", "Content-Type": "application/json"},
+                    json={"model": self._model, "messages": messages},
+                    timeout=55,
+                )
+                if resp.status_code == 429:
+                    wait = (2 ** attempt) + 1
+                    logger.warning("Rate limited (429), retrying in %ds (attempt %d/%d)", wait, attempt + 1, max_retries)
+                    last_error = "rate_limit"
+                    time.sleep(wait)
+                    continue
+                resp.raise_for_status()
+                data = resp.json()
+                content = data.get("choices", [{}])[0].get("message", {}).get("content", "").strip()
+                if not content:
+                    last_error = "empty_response"
+                    time.sleep(2)
+                    continue
+                return content
+            except requests.exceptions.Timeout:
+                last_error = "timeout"
+                logger.warning("Request timed out, attempt %d/%d", attempt + 1, max_retries)
+                continue
+            except Exception as exc:
+                last_error = str(exc)
+                logger.error("LLM error: %s", exc)
+                time.sleep(1.5)
+                continue
+
+        # All retries exhausted — friendly message
+        if last_error == "rate_limit":
+            return "⚠️ The AI service is currently busy (high demand on the free tier). Please wait a moment and try again."
+        elif last_error == "timeout":
+            return "⚠️ The request took too long to process. Please try again with a shorter question."
+        else:
+            return "⚠️ Something went wrong generating a response. Please try again in a moment."
 
     def generate_proposal(self, context, client_name, industry, budget, goals, services):
         prompt = f"""
