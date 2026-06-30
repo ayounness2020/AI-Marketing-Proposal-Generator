@@ -336,17 +336,45 @@ Include for each service:
                     st.divider()
 
                     # Download buttons
+                    def is_arabic_text(t):
+                        import unicodedata
+                        arabic_chars = sum(1 for c in t[:50] if unicodedata.bidirectional(c) in ("R", "AL"))
+                        return arabic_chars > 3
+
+                    def set_rtl(para):
+                        from docx.oxml.ns import qn
+                        from docx.oxml import OxmlElement
+                        pPr = para._p.get_or_add_pPr()
+                        bidi = OxmlElement("w:bidi")
+                        pPr.append(bidi)
+                        jc = OxmlElement("w:jc")
+                        jc.set(qn("w:val"), "right")
+                        pPr.append(jc)
+
                     def md_to_docx(text, title):
                         doc = DocxDocument()
-                        doc.add_heading(title, 0)
+                        rtl = is_arabic_text(text)
+                        h = doc.add_heading(title, 0)
+                        if rtl: set_rtl(h)
                         for ln in text.split("\n"):
                             ln = ln.strip()
-                            if not ln: doc.add_paragraph("")
-                            elif ln.startswith("### "): doc.add_heading(ln[4:], level=2)
-                            elif ln.startswith("## "): doc.add_heading(ln[3:], level=1)
-                            elif ln.startswith("# "): doc.add_heading(ln[2:], level=0)
-                            elif ln.startswith("- ") or ln.startswith("• "): doc.add_paragraph(ln[2:], style="List Bullet")
-                            else: doc.add_paragraph(ln)
+                            if not ln:
+                                doc.add_paragraph("")
+                            elif ln.startswith("### "):
+                                p = doc.add_heading(ln[4:], level=2)
+                                if rtl: set_rtl(p)
+                            elif ln.startswith("## "):
+                                p = doc.add_heading(ln[3:], level=1)
+                                if rtl: set_rtl(p)
+                            elif ln.startswith("# "):
+                                p = doc.add_heading(ln[2:], level=0)
+                                if rtl: set_rtl(p)
+                            elif ln.startswith("- ") or ln.startswith("• "):
+                                p = doc.add_paragraph(ln[2:], style="List Bullet")
+                                if rtl: set_rtl(p)
+                            else:
+                                p = doc.add_paragraph(ln)
+                                if rtl: set_rtl(p)
                         buf = io.BytesIO()
                         doc.save(buf)
                         buf.seek(0)
