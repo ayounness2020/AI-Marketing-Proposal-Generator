@@ -112,6 +112,17 @@ with st.sidebar:
                 st.warning("Click again to confirm.")
 
     st.divider()
+    st.markdown("### 💾 Export Knowledge Base")
+    st.caption("Download these and commit to GitHub to make uploads persistent.")
+    if config.FAISS_INDEX_PATH.exists() and config.FAISS_METADATA_PATH.exists():
+        with open(config.FAISS_INDEX_PATH, "rb") as f:
+            st.download_button("⬇️ Download index.faiss", f.read(), file_name="index.faiss", use_container_width=True)
+        with open(config.FAISS_METADATA_PATH, "rb") as f:
+            st.download_button("⬇️ Download metadata.json", f.read(), file_name="metadata.json", use_container_width=True)
+    else:
+        st.info("No index yet. Upload documents first.")
+
+    st.divider()
     stats = service.get_stats()
     st.markdown("### 📊 System Status")
     st.metric("Documents", stats["total_documents"])

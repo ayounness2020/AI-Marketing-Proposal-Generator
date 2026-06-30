@@ -1,0 +1,103 @@
+CASE STUDY
+Agency: DigitalEdge Marketing
+Client: MedCare Clinics Egypt
+Project Duration: 6 months (2024)
+
+Executive Summary
+-----------------
+MedCare Clinics approached DigitalEdge to grow patient bookings across their 5 Cairo locations.
+Within 6 months we increased online appointment bookings by 187% and reduced cost-per-booking from EGP 450 to EGP 185.
+
+Client Background
+-----------------
+MedCare Clinics is a private healthcare chain with 5 locations in Cairo (Nasr City, Maadi, Zamalek, New Cairo, 6th October).
+Services include general medicine, dermatology, cardiology, and paediatrics.
+Prior to the engagement, 70% of patient acquisition came from walk-ins and word-of-mouth.
+
+Business Objectives
+-------------------
+1. Increase online appointment bookings by 100% within 6 months.
+2. Build brand recognition in premium healthcare segment.
+3. Attract patients from higher-income demographics.
+4. Expand social media following on Facebook and Instagram.
+
+Marketing Strategy
+------------------
+We deployed a full-funnel approach targeting patients at three stages:
+- Awareness: Educational content marketing, health tips, doctor profiles
+- Consideration: Retargeting campaigns with patient testimonials and service differentiators
+- Conversion: Google Search ads targeting high-intent keywords (e.g. "best dermatologist Cairo")
+
+SEO Strategy
+------------
+- Targeted 85 medical keywords across all specialties
+- Created dedicated landing pages for each clinic location
+- Produced 40 health education articles in Arabic and English
+- Built local SEO citations for all 5 locations
+- Result: 145% increase in organic search traffic; 32 keywords ranking in Google Top 5
+
+Paid Ads Strategy
+-----------------
+Google Ads:
+- Search campaigns targeting medical procedure keywords
+- Display remarketing to website visitors
+- Budget: EGP 18,000/month
+- Result: 3.8% average CTR; EGP 210 average CPA
+
+Meta Ads (Facebook + Instagram):
+- Health awareness carousel ads
+- Doctor spotlight video ads
+- Appointment booking objective campaigns
+- Budget: EGP 12,000/month
+- Result: 2.3% conversion rate; reach of 280,000 unique users/month
+
+Social Media Strategy
+---------------------
+- 45 posts/month across Facebook, Instagram, LinkedIn
+- Weekly health tip videos featuring MedCare doctors
+- Patient testimonial reels (with consent)
+- Monthly health awareness campaigns (e.g. Diabetes Awareness Month)
+- Result: Facebook followers grew from 8,200 to 31,400 (+283%)
+
+Results
+-------
+Metrics at the end of Month 6 vs. baseline:
+
+| Metric                        | Before   | After    | Change  |
+|-------------------------------|----------|----------|---------|
+| Monthly Online Bookings       | 312      | 896      | +187%   |
+| Cost Per Booking (EGP)        | 450      | 185      | -59%    |
+| Website Monthly Traffic       | 4,200    | 11,800   | +181%   |
+| Organic Search Traffic        | 1,100    | 2,695    | +145%   |
+| Facebook Followers            | 8,200    | 31,400   | +283%   |
+| Instagram Followers           | 3,100    | 14,900   | +381%   |
+| Google Ads CTR                | 1.9%     | 3.8%     | +100%   |
+
+KPIs
+----
+- Primary: Online appointment bookings (Target: +100%. Achieved: +187%)
+- Secondary: Cost per booking (Target: <EGP 250. Achieved: EGP 185)
+- Brand: Social media growth (Target: +150% followers. Achieved: +283%)
+
+Pricing
+-------
+Monthly Retainer for MedCare: EGP 28,000/month
+Ad Spend Managed: EGP 30,000/month
+Total 6-Month Investment: EGP 348,000
+
+Return On Investment:
+- Each new patient generates average EGP 1,200 in revenue
+- 584 incremental new patients over 6 months = EGP 700,800 incremental revenue
+- ROI: ~101% on total marketing investment
+
+Recommendations
+---------------
+Based on the success of this campaign, we recommend MedCare:
+1. Expand Google Ads to include Alexandria locations.
+2. Launch a patient loyalty programme with email marketing.
+3. Invest in YouTube health education channel.
+4. Introduce Arabic-language chatbot for appointment booking.
+
+Next Steps
+----------
+MedCare renewed contract for 12 months with expanded scope including email marketing and WhatsApp automation.
