@@ -120,5 +120,17 @@ Generate a complete professional marketing proposal for {client_name} with these
     def chat_with_documents(self, question: str, context: str) -> str:
         if not context.strip():
             return "The requested information could not be found in the uploaded documents."
-        prompt = f"## DOCUMENTS\n{context}\n\n## QUESTION\n{question}\n\nAnswer using only the documents above."
+        prompt = f"""## DOCUMENT EXCERPTS FROM KNOWLEDGE BASE
+{context}
+
+## USER QUESTION
+{question}
+
+## INSTRUCTIONS
+- Answer the question directly and completely based on the document excerpts above
+- Do NOT repeat the question back as your answer
+- Summarize and explain the relevant information clearly
+- If the documents do not contain enough information, say so honestly
+- Respond in the same language as the question (Arabic or English)
+- Provide a helpful, detailed answer"""
         return self.generate_response(prompt, system=_CHAT_SYSTEM)
